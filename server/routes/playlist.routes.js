@@ -1,5 +1,5 @@
 import express from 'express';
-import playListCtrl from '../controllers/playList.controller.js';
+import playListCtrl from '../controllers/playlist.controller.js';
 
 const router = express.Router();
 router.route('/api/playlists').post(playListCtrl.create);
