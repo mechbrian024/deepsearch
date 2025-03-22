@@ -9,6 +9,8 @@ import userRoutes from './routes/user.routes.js'
 import authRoutes from './routes/auth.routes.js'
 import playListRoutes from './routes/playlist.routes.js'
 import spotifyRoutes from './routes/spotify.routes.js'
+import songRoutes from './routes/song.routes.js'
+import filterRoutes from './routes/filter.routes.js'
 
 const app = express()
 
@@ -20,8 +22,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/', userRoutes)
 app.use('/', authRoutes)
+// DeepSearch
 app.use('/', playListRoutes)
 app.use('/', spotifyRoutes)
+app.use('/', songRoutes)
+app.use('/', filterRoutes)
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
