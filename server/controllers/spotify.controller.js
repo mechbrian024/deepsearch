@@ -1,44 +1,37 @@
 import errorHandler from "../helpers/dbErrorHandler.js";
 import extend from "lodash/extend.js";
+import { spotifyApi } from "../../server.js";
 
-const token =
-  "BQBfJBl95qtK7XqtCw4LnWDZpDlhqhssnWzYvRX22KhefMXdfOcVFAq5DEBqRWNd58H9Lr6QXrk2f16LnEJ5p4vQqqDrJiptTP9EhWMGXlVBj4K3lFAro03HfgBSFv97gFdkdVFnItVC-VqVsJvHu5hSChfcVDNajl0cKt9HzBvDLlT8Y0zNL9OAgkpF3ujoIVRkwfCNDb0NtFhtP0QjDgSW3_U9X9FwWMM2-5zks4OwHKbZtthrLD0llpeWMcSaei4ZknKaIviNTjy59Vl5sTNpP97lrv906w-X0Iy2NBoFg9CXC8sDh2gk";
+const scopes = [
+  "playlist-read-private", // Scope to read private playlists
+  "playlist-read-collaborative", // Scope to read collaborative playlists
+  "user-library-read", // Scope to read the user's saved tracks
+  "playlist-modify-public", // Scope to create and modify public playlists
+  "playlist-modify-private", // Scope to create and modify private playlists
+];
 
-async function fetchWebApi(endpoint, method, body) {
-  const res = await fetch(`https://api.spotify.com/${endpoint}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    method,
-    body: JSON.stringify(body),
-  });
-  return await res.json();
-}
+const getSpotifyAuth = (req, res) => {
+  const authUrl = spotifyApi.createAuthorizeURL(scopes, "your_state_value");
+  res.redirect(authUrl);
+};
 
-async function getTopTracks() {
-  // Endpoint reference : https://developer.spotify.com/documentation/web-api/reference/get-users-top-artists-and-tracks
-  return (
-    await fetchWebApi("v1/me/top/tracks?time_range=long_term&limit=5", "GET")
-  ).items;
-}
+const handleSpotifyCallback = async (req, res) => {
+  const code = req.query.code;
 
-const topTracks = await getTopTracks();
-
-console.log(
-  topTracks?.map(
-    ({ name, artists }) =>
-      `${name} by ${artists.map((artist) => artist.name).join(", ")}`
-  )
-);
-
-const listTopTracks = async (req, res) => {
   try {
-    res.json(topTracks);
+    const data = await spotifyApi.authorizationCodeGrant(code);
+    const accessToken = data.body.access_token;
+    const refreshToken = data.body.refresh_token;
+
+    // Save tokens for future use (e.g., in a database or session)
+    spotifyApi.setAccessToken(accessToken);
+    spotifyApi.setRefreshToken(refreshToken);
+
+    res.redirect(`http://localhost:5173?access_token=${accessToken}`);
   } catch (err) {
-    return res.status(400).json({
-      error: errorHandler.getErrorMessage(err),
-    });
+    console.error("Error during Spotify authorization:", err);
+    res.status(500).send("Failed to authenticate with Spotify.");
   }
 };
 
-export default { listTopTracks };
+export default { getSpotifyAuth, handleSpotifyCallback };
