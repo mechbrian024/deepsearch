@@ -31,6 +31,10 @@ const FilterBlockSchema = new mongoose.Schema({
 });
 
 const FilterSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
   filterBlocks: {
     type: [FilterBlockSchema],
     required: true,

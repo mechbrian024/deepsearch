@@ -1,35 +1,63 @@
-import errorHandler from '../helpers/dbErrorHandler';
-import SpotifyAPI from '../services/spotify.service';
-import SongModel from '../models/song.model';
-import filterModel from '../models/filter.model';
+import errorHandler from "./error.controller.js";
+import Filter from "../models/filter.model.js";
+import Playlist from "../models/playList.model.js";
+import Song from "../models/song.model.js";
+import { filterSongsByFilterObject } from "../utils/filterEngine.js";
 
-const filter = async (req, res) => {
-    try {
-        // Get playlistId from the request
-        const { playlistId } = req.body;
-
-        // Retrieve songs from the playlist using playlistId
-        // const playlistSongs = 
-
-        // Check if the songs exist in MongoDB, if not, fetch from Spotify API
-        // Use SongController
-        // const songs = 
-
-        // Filter songs based on filter criteria
-        // Create FilterModel fron request body
-        //const filterModel = new FilterModel(req.body);
-
-        // Use FilterModel to filter songs
-        const filteredSongs = songs;
-
-        // Return filtered songs
-        return res.status(200).json(filteredSongs);
-
-    } catch (err) {
-        return res.status(400).json({
-            error: errorHandler.getErrorMessage(err),
-        });
-    }
+const create = async (req, res) => {
+  const filter = new Filter(req.body);
+  try {
+    await filter.save();
+    return res.status(200).json({
+      message: "Successfully created filter!",
+    });
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err),
+    });
+  }
 };
 
-// ...existing code...
+const filterByName = async (req, res) => {
+  try {    
+    const filter = await Filter.findOne({ name: req.params.name });
+    return res.status(200).json(filter);
+  } catch (err) {
+    return res.status(400).json({});
+  }
+};
+
+const search = async (req, res) => {
+  try {
+    // Get playlistId from the request    
+    const listId = req.body.playlistId;
+
+    // Retrieve songs from the playlist using playlistId
+    const playlist = await Playlist.findOne({ playlistId: listId });
+    // console.log("$$$ This is the playlist: " + playlist);
+
+    // retirve songs from the playlist
+    const songs = await Promise.all(
+      playlist.songs.map(async (id) => {
+        return await Song.findOne({ songId: id });
+      })
+    );
+    
+    // Filter Object
+    const filter = new Filter(req.body.filter);
+    
+    // Use FilterModel to filter songs
+    const filteredSongs = filterSongsByFilterObject(songs, filter);
+
+    // Return filtered songs
+    return res.status(200).json(filteredSongs);
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err),
+    });
+  }
+};
+
+
+
+export default { create, filterByName, search };

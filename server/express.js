@@ -9,6 +9,7 @@ import userRoutes from "./routes/user.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import playListRoutes from "./routes/playlist.routes.js";
 import spotifyRoutes from "./routes/spotify.routes.js";
+import filterRoutes from "./routes/filter.routes.js";
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use("/", userRoutes);
 app.use("/", authRoutes);
 app.use("/", playListRoutes);
 app.use("/", spotifyRoutes);
+app.use("/", filterRoutes);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
