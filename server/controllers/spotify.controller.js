@@ -27,7 +27,7 @@ const handleSpotifyCallback = async (req, res) => {
     spotifyApi.setAccessToken(accessToken);
     spotifyApi.setRefreshToken(refreshToken);
 
-    res.redirect(`http://localhost:5173/login?access_token=${accessToken}`);
+    res.redirect(`http://localhost:5173/dashboard?access_token=${accessToken}`);
   } catch (err) {
     console.error("Error during Spotify authorization:", err);
     res.status(500).send("Failed to authenticate with Spotify.");

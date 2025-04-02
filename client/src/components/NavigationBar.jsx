@@ -1,65 +1,89 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const NavigationBar = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // Get the current path
 
   const navStyle = {
     position: "fixed",
     top: 0,
     left: 0,
     right: 0,
-    display: 'flex',
+    display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "10px 40px",
-    backgroundColor: "#282c34",
-    color: "white",
+    padding: "20px 40px",
+    backgroundColor: "#1e1e1e", // Dark background
+    color: "#a8f0e8", // Teal text color
+    fontSize: "16px",
+    fontWeight: "normal",
+    zIndex: 1000, // Ensure it stays on top
   };
 
-  const leftButtonStyle = {
+  const leftLogoStyle = {
     fontSize: "20px",
     fontWeight: "bold",
-    background: "none",
-    border: "none",
-    color: "white",
     cursor: "pointer",
+    color: "#a8f0e8", // Teal color for the logo
   };
 
   const rightContainerStyle = {
     display: "flex",
-    gap: "15px",
+    gap: "30px",
   };
 
-  const rightButtonStyle = {
-    padding: "8px 14px",
-    backgroundColor: "#1DB954",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
+  const navLinkStyle = (path) => ({
+    textDecoration: "none",
+    color: location.pathname === path ? "#6ee7b7" : "#a8f0e8", // Highlight active link
     cursor: "pointer",
-    fontSize: "14px",
-  };
+    transition: "color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease", // Smooth transition for color and glow
+    textShadow:
+      location.pathname === path
+        ? "0 0 6px #6ee7b7, 0 0 12px #6ee7b7, 0 0 18px #34d399" // Softer gradient glow
+        : "none",
+    transform: location.pathname === path ? "scale(1.05)" : "none", // Slightly enlarge the active link
+  });
 
   return (
     <div style={navStyle}>
-      <button onClick={() => navigate("/landing")} style={leftButtonStyle}>
-        Deep Search
-      </button>
+      {/* Logo */}
+      <div onClick={() => navigate("/dashboard")} style={leftLogoStyle}>
+        Deep <span style={{ fontWeight: "normal" }}>Search</span>
+      </div>
 
+      {/* Navigation Links */}
       <div style={rightContainerStyle}>
-        <button onClick={() => navigate("/searches")} style={rightButtonStyle}>
+        <span
+          onClick={() => navigate("/dashboard")}
+          style={navLinkStyle("/dashboard")}
+        >
+          Dashboard
+        </span>
+        <span
+          onClick={() => navigate("/searches")}
+          style={navLinkStyle("/searches")}
+        >
           Your Searches
-        </button>
-        <button onClick={() => navigate("/playlists")} style={rightButtonStyle}>
+        </span>
+        <span
+          onClick={() => navigate("/playlists")}
+          style={navLinkStyle("/playlists")}
+        >
           Your Playlists
-        </button>
-        <button onClick={() => navigate("/community")} style={rightButtonStyle}>
+        </span>
+        <span
+          onClick={() => navigate("/community")}
+          style={navLinkStyle("/community")}
+        >
           Community
-        </button>
-        <button onClick={() => navigate("/account")} style={rightButtonStyle}>
+        </span>
+        <span
+          onClick={() => navigate("/account")}
+          style={navLinkStyle("/account")}
+        >
           Account
-        </button>
+        </span>
       </div>
     </div>
   );

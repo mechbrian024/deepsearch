@@ -16,9 +16,8 @@ const SongSchema = new mongoose.Schema({
     default: [],
   },
   genre: {
-    type: String,
-    trim: true,
-    default: "Unknown",
+    type: [String], // Array of genres
+    default: [], // Default to an empty array
   },
   playlistId: {
     type: String, // Reference to the playlist this song belongs to
@@ -31,6 +30,14 @@ const SongSchema = new mongoose.Schema({
   releaseYear: {
     type: Number, // Year the song was released
     default: null,
+  },
+  popularity: {
+    type: Number, // Popularity score
+    default: 0, // Default value for popularity
+  },
+  duration: {
+    type: Number, // Duration of the song in seconds
+    default: 0, // Default value for duration
   },
 });
 
