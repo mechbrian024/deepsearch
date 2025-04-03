@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const NavigationBar = () => {
@@ -6,7 +6,7 @@ const NavigationBar = () => {
   const location = useLocation(); // Get the current path
 
   // State to check if the user is logged in
-  const [storedToken, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
     const storedToken = localStorage.getItem("spotify_access_token");
     setIsLoggedIn(!!storedToken); // true or false
@@ -63,14 +63,14 @@ const NavigationBar = () => {
     <div style={navStyle}>
       {/* Logo */}
       <div
-        onClick={() => (storedToken ? navigate("/dashboard") : navigate("/"))}
+        onClick={() => (isLoggedIn ? navigate("/dashboard") : navigate("/"))}
         style={leftLogoStyle}
       >
         Deep <span style={{ fontWeight: "normal" }}>Search</span>
       </div>
 
       {/* Navigation Links */}
-      {storedToken ? (
+      {isLoggedIn ? (
         <div style={rightContainerStyle}>
           <span
             onClick={() => navigate("/dashboard")}
