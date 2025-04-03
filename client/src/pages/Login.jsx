@@ -1,6 +1,7 @@
 import NavigationBar from "../components/NavigationBar";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { syncData } from "../utils/spotifyUtils";
 
 const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -28,20 +29,6 @@ const Login = () => {
       navigate("/landing");
     }
   }, [isLoggedIn, navigate]);
-
-  const syncData = async () => {
-    const accessToken = localStorage.getItem("spotify_access_token");
-    if (!accessToken) {
-      alert("Please log in first!");
-      return;
-    }
-
-    const response = await fetch(
-      `http://localhost:3000/api/syncWithSpotify?access_token=${accessToken}`
-    );
-    const data = await response.json();
-    console.log(data);
-  };
 
   const handleLogin = () => {
     console.log("Logging in...");
