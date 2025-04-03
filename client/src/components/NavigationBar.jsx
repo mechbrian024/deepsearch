@@ -6,15 +6,11 @@ const NavigationBar = () => {
   const location = useLocation(); // Get the current path
 
   // State to check if the user is logged in
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [storedToken, setIsLoggedIn] = useState(false);
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const accessToken = params.get("access_token");
-
-    if (accessToken) {
-      setIsLoggedIn(true);
-    }
-  }, [isLoggedIn, navigate]);
+    const storedToken = localStorage.getItem("spotify_access_token");
+    setIsLoggedIn(!!storedToken); // true or false
+  }, []);
 
   // This function will redirect the user to the Spotify authorization URL
   const handleLogin = () => {
@@ -66,12 +62,15 @@ const NavigationBar = () => {
   return (
     <div style={navStyle}>
       {/* Logo */}
-      <div onClick={() => navigate("/")} style={leftLogoStyle}>
+      <div
+        onClick={() => (storedToken ? navigate("/dashboard") : navigate("/"))}
+        style={leftLogoStyle}
+      >
         Deep <span style={{ fontWeight: "normal" }}>Search</span>
       </div>
 
       {/* Navigation Links */}
-      {isLoggedIn ? (
+      {storedToken ? (
         <div style={rightContainerStyle}>
           <span
             onClick={() => navigate("/dashboard")}
@@ -112,10 +111,7 @@ const NavigationBar = () => {
           >
             Community
           </span>
-          <span
-            onClick={handleLogin}
-            style={navLinkStyle("/account")}
-          >
+          <span onClick={handleLogin} style={navLinkStyle("/account")}>
             Login
           </span>
         </div>

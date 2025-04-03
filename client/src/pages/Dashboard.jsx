@@ -16,7 +16,7 @@ const Dashboard = () => {
     if (accessToken) {
       setIsLoggedIn(true);
       localStorage.setItem("spotify_access_token", accessToken);
-      window.history.replaceState({}, document.title, "/");
+      window.history.replaceState({}, document.title, "/dashboard"); // Remove access_token from URL
 
       // Invoke syncData immediately after login
       syncData();
