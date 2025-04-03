@@ -1,9 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const NavigationBar = () => {
   const navigate = useNavigate();
   const location = useLocation(); // Get the current path
+
+  // State to check if the user is logged in
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const accessToken = params.get("access_token");
+
+    if (accessToken) {
+      setIsLoggedIn(true);
+    }
+  }, [isLoggedIn, navigate]);
+
+  // This function will redirect the user to the Spotify authorization URL
+  const handleLogin = () => {
+    console.log("Logging in...");
+    // Redirect to the Spotify authorization URL
+    window.location.href = "http://localhost:3000/auth";
+  };
 
   const navStyle = {
     position: "fixed",
@@ -48,43 +66,60 @@ const NavigationBar = () => {
   return (
     <div style={navStyle}>
       {/* Logo */}
-      <div onClick={() => navigate("/dashboard")} style={leftLogoStyle}>
+      <div onClick={() => navigate("/")} style={leftLogoStyle}>
         Deep <span style={{ fontWeight: "normal" }}>Search</span>
       </div>
 
       {/* Navigation Links */}
-      <div style={rightContainerStyle}>
-        <span
-          onClick={() => navigate("/dashboard")}
-          style={navLinkStyle("/dashboard")}
-        >
-          Dashboard
-        </span>
-        <span
-          onClick={() => navigate("/searches")}
-          style={navLinkStyle("/searches")}
-        >
-          Your Searches
-        </span>
-        <span
-          onClick={() => navigate("/playlists")}
-          style={navLinkStyle("/playlists")}
-        >
-          Your Playlists
-        </span>
-        <span
-          onClick={() => navigate("/community")}
-          style={navLinkStyle("/community")}
-        >
-          Community
-        </span>
-        <span
-          onClick={() => navigate("/account")}
-          style={navLinkStyle("/account")}
-        >
-          Account
-        </span>
-      </div>
+      {isLoggedIn ? (
+        <div style={rightContainerStyle}>
+          <span
+            onClick={() => navigate("/dashboard")}
+            style={navLinkStyle("/dashboard")}
+          >
+            Dashboard
+          </span>
+          <span
+            onClick={() => navigate("/searches")}
+            style={navLinkStyle("/searches")}
+          >
+            Your Searches
+          </span>
+          <span
+            onClick={() => navigate("/playlists")}
+            style={navLinkStyle("/playlists")}
+          >
+            Your Playlists
+          </span>
+          <span
+            onClick={() => navigate("/community")}
+            style={navLinkStyle("/community")}
+          >
+            Community
+          </span>
+          <span
+            onClick={() => navigate("/account")}
+            style={navLinkStyle("/account")}
+          >
+            Account
+          </span>
+        </div>
+      ) : (
+        <div style={rightContainerStyle}>
+          <span
+            onClick={() => navigate("/community")}
+            style={navLinkStyle("/community")}
+          >
+            Community
+          </span>
+          <span
+            onClick={handleLogin}
+            style={navLinkStyle("/account")}
+          >
+            Login
+          </span>
+        </div>
+      )}
     </div>
   );
 };
