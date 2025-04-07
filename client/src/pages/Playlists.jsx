@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import NavigationBar from "../components/NavigationBar";
-import { fetchPlaylists } from "../utils/spotifyUtils";
+// import { fetchPlaylists } from "../utils/spotifyUtils";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  syncAndUpdatePlaylists,
+  // setSelectedPlaylist,
+  fetchSongsThunk,
+} from "../state/playlistSlice";
+
+import { useSpotifyAuth } from "../context/SpotifyAuthContext";
 
 // Helper function to format duration in mm:ss
 const formatDuration = (durationInSeconds) => {
@@ -10,65 +18,45 @@ const formatDuration = (durationInSeconds) => {
 };
 
 const Playlists = () => {
-  // State variables for playlists and songs
-  const [playlists, setPlaylists] = useState([]);
-  const [songs, setSongs] = useState({});
-  const [loading, setLoading] = useState(true);
+  const { accessToken } = useSpotifyAuth();
+  const dispatch = useDispatch();
+  const {
+    items: playlists,
+    songs,
+    loading,
+    syncMessage,
+  } = useSelector((state) => state.playlists);
+
   const [expandedCardId, setExpandedCardId] = useState(null); // Tracks the ID of the currently expanded card
-
-  // // Fetch playlists from the backend
-  // const fetchPlaylists = async () => {
-  //   try {
-  //     const response = await fetch("http://localhost:3000/api/playlists"); // Replace with your backend API endpoint
-  //     const data = await response.json();
-  //     setPlaylists(data || []); // Ensure playlists is an array
-  //   } catch (error) {
-  //     console.error("Error fetching playlists:", error);
-  //   }
-  // };
-
-  // Fetch song details for a given array of song IDs
-  const fetchSongs = async (songIds) => {
-    try {
-      const songDetails = await Promise.all(
-        songIds.map(async (songId) => {
-          const response = await fetch(
-            `http://localhost:3000/api/songs/${songId}`
-          ); // Replace with your backend API endpoint
-          const data = await response.json();
-          return { id: songId, ...data };
-        })
-      );
-
-      // Update the songs state with the fetched song details
-      setSongs((prevSongs) => ({
-        ...prevSongs,
-        ...Object.fromEntries(songDetails.map((song) => [song.id, song])),
-      }));
-    } catch (error) {
-      console.error("Error fetching songs:", error);
-    }
-  };
 
   // Fetch playlists and their songs on component mount
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      const data = await fetchPlaylists();
-      setPlaylists(data);
-      setLoading(false);
+      // setLoading(true);
+      // const data = await fetchPlaylists();
+      // setPlaylists(data);
+      // setLoading(false);
+      console.log(
+        "playlist data since new search already updated playlist value in store: ",
+        playlists
+      );
+      if (accessToken) {
+        dispatch(syncAndUpdatePlaylists(accessToken));
+      }
     };
 
     fetchData();
-  }, []);
+  }, [accessToken, dispatch]);
 
   // Fetch songs whenever playlists are updated
   useEffect(() => {
     if (playlists.length > 0) {
       const allSongIds = playlists.flatMap((playlist) => playlist.songs || []); // Ensure songs is an array
-      fetchSongs(allSongIds);
+      // fetchSongs(allSongIds);
+      dispatch(fetchSongsThunk(allSongIds));
+      console.log("songs", songs);
     }
-  }, [playlists]);
+  }, [playlists, dispatch]);
 
   // Toggle card expansion
   const toggleCardExpansion = (playlistId) => {
@@ -114,7 +102,7 @@ const Playlists = () => {
                     >
                       {playlist.songs && playlist.songs.length > 0 ? (
                         playlist.songs.map((songId) => {
-                          const song = songs[songId];
+                          const song = songs[songId]; // Access song by its ID
                           return song ? (
                             <li
                               key={`${playlist.id}-${songId}`}
@@ -125,9 +113,6 @@ const Playlists = () => {
                               </p>
                               <p className="text-sm text-gray-400">
                                 Artists: {song.artists?.join(", ") || "Unknown"}
-                              </p>
-                              <p className="text-sm text-gray-400">
-                                Release Year: {song.releaseYear || "Unknown"}
                               </p>
                               <p className="text-sm text-gray-400">
                                 Duration: {formatDuration(song.duration || 0)}

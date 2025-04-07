@@ -1,32 +1,36 @@
 import NavigationBar from "../components/NavigationBar";
 import Logo from "../assets/Logo.png";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useSpotifyAuth } from "../context/SpotifyAuthContext";
+import { Navigate } from "react-router-dom";
 
 const Landing = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate();
-  
-  // State to check if the user is logged in
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const accessToken = params.get("access_token");
+  const { login, isAuthenticated } = useSpotifyAuth();
+  console.log("isAuthenticated", isAuthenticated);
 
-    if (accessToken) {
-      setIsLoggedIn(true);
-      // navigate("/dashboard");
-    }
-  }, [isLoggedIn, navigate]);
-
-  const handleLogin = () => {
-    console.log("Logging in...");
-    // Redirect to the Spotify authorization URL
-    window.location.href = "http://localhost:3000/auth";
-  };
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   return (
     <>
-      <NavigationBar />
+      {/* Navigation Bar */}
+      <div className="flex justify-between items-center p-6 bg-black text-teal-300">
+        <h2 className="text-xl font-bold">Deep Search</h2>
+        <div className="space-x-6">
+          <a
+            href="/community"
+            className="text-xl font-bold hover:text-teal-300"
+          >
+            Community
+          </a>
+          <button
+            onClick={login}
+            className="text-xl font-bold hover:text-teal-300"
+          >
+            Login
+          </button>
+        </div>
+      </div>
 
       <div className="flex min-h-screen bg-black text-teal-300 p-10">
         {/* Left Section */}
@@ -44,7 +48,7 @@ const Landing = () => {
           </ul>
           <p className="mt-6">Get started by logging in with Spotify!</p>
           <button
-            onClick={handleLogin}
+            onClick={login}
             className="mt-4 bg-gray-700 text-teal-300 px-4 py-2 rounded-full text-sm font-semibold hover:bg-gray-600 inline-block"
           >
             Login with Spotify

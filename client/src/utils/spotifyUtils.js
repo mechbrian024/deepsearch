@@ -1,5 +1,4 @@
-export const syncData = async () => {
-  const accessToken = localStorage.getItem("spotify_access_token");
+export const syncData = async (accessToken) => {
   if (!accessToken) {
     alert("Please log in first!");
     return;
@@ -26,5 +25,23 @@ export const fetchPlaylists = async () => {
     return data; // Return the data for further use
   } catch (error) {
     console.error("Error fetching playlists:", error);
+  }
+};
+
+export const fetchSongs = async (songIds) => {
+  try {
+    const songDetails = await Promise.all(
+      songIds.map(async (songId) => {
+        const response = await fetch(
+          `http://localhost:3000/api/songs/${songId}`
+        ); // Replace with your backend API endpoint
+        const data = await response.json();
+        return { id: songId, ...data };
+      })
+    );
+
+    return songDetails;
+  } catch (error) {
+    console.error("Error fetching songs:", error);
   }
 };

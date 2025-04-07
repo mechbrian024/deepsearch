@@ -1,12 +1,27 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import NavigationBar from "../components/NavigationBar";
-import { syncData, fetchPlaylists } from "../utils/spotifyUtils";
+import { useSpotifyAuth } from "../context/SpotifyAuthContext";
+import {
+  syncAndUpdatePlaylists,
+  setSelectedPlaylist,
+} from "../state/playlistSlice";
 import { set } from "lodash";
+import { useState, useRef } from "react";
 
 const NewSearch = () => {
+  const dispatch = useDispatch();
+  const { accessToken } = useSpotifyAuth();
+
+  // Subscribe to playlist state from Redux store
+  const {
+    items: playlists,
+    selectedPlaylist,
+    loading,
+    syncMessage,
+  } = useSelector((state) => state.playlists);
+
   // State variables
-  const [playlists, setPlaylists] = useState([]); // Holds all playlists
-  const [selectedPlaylist, setSelectedPlaylist] = useState(null); // Holds selected playlist details
   const [songs, setSongs] = useState([]); // Holds all song metadata
   const [genres, setGenres] = useState([]); // Holds unique genres
   const [releaseYears, setReleaseYears] = useState([]); // Holds unique release years
@@ -21,27 +36,14 @@ const NewSearch = () => {
   const [bannerMessage, setBannerMessage] = useState(null); // For banner message
   const [bannerType, setBannerType] = useState(""); // "success" or "error"
   const popupRef = useRef(null);
+  const [psMessage, setPsMessage] = useState("");
 
-  // Fetch playlists
-  // const fetchPlaylists = async () => {
-  //   try {
-  //     const response = await fetch("http://localhost:3000/api/playlists");
-  //     const data = await response.json();
-  //     setPlaylists(data); // Update the playlists state
-  //   } catch (error) {
-  //     console.error("Error fetching playlists:", error);
-  //   }
-  // };
-
-  const updatePlaylistData = async () => {
-    const playlistsData = await fetchPlaylists();
-    setPlaylists(playlistsData);
-  };
-
-  // Call fetchPlaylists in useEffect on page load
+  // Initial data fetch
   useEffect(() => {
-    updatePlaylistData();
-  }, []);
+    if (accessToken) {
+      dispatch(syncAndUpdatePlaylists(accessToken));
+    }
+  }, [accessToken, dispatch]);
 
   // Close popup when clicking outside
   useEffect(() => {
@@ -69,7 +71,7 @@ const NewSearch = () => {
         `http://localhost:3000/api/playlists/${playlistId}`
       );
       const data = await response.json();
-      setSelectedPlaylist(data);
+      dispatch(setSelectedPlaylist(data));
 
       // Fetch song metadata for the songs in the playlist
       const songMetadata = await Promise.all(
@@ -305,9 +307,10 @@ const NewSearch = () => {
       setBannerType("success");
 
       setShowPopup(false); // Close the popup
-      await syncData();
-      // await fetchPlaylists(); // Re-fetch playlists to update the playlist section
-      await updatePlaylistData();
+      // await syncData(accessToken);
+      // // await fetchPlaylists(); // Re-fetch playlists to update the playlist section
+      // await updatePlaylistData();
+      dispatch(syncAndUpdatePlaylists(accessToken));
     } catch (error) {
       console.error("Error creating playlist:", error);
 
@@ -374,7 +377,7 @@ const NewSearch = () => {
                 </li>
               ))
             ) : (
-              <p className="text-gray-400">No playlists available</p>
+              <p className="text-gray-400">{syncMessage}</p>
             )}
           </ul>
         </div>
