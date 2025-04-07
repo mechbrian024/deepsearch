@@ -2,40 +2,18 @@ import NavigationBar from "../components/NavigationBar";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { syncData } from "../utils/spotifyUtils";
+import { useSpotifyAuth } from "../context/SpotifyAuthContext";
 
 const Dashboard = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  console.log("dashboard called");
   const navigate = useNavigate();
-
+  const { isAuthenticated, accessToken } = useSpotifyAuth();
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const accessToken = params.get("access_token");
-
-    console.log("Token from query:", accessToken);
-
-    if (accessToken) {
-      setIsLoggedIn(true);
-      localStorage.setItem("spotify_access_token", accessToken);
-      window.history.replaceState({}, document.title, "/");
-
-      // Invoke syncData immediately after login
-      syncData();
+    if (isAuthenticated) {
+      syncData(accessToken);
     }
-  }, [isLoggedIn, navigate]);
-
-  // const syncData = async () => {
-  //   const accessToken = localStorage.getItem("spotify_access_token");
-  //   if (!accessToken) {
-  //     alert("Please log in first!");
-  //     return;
-  //   }
-
-  //   const response = await fetch(
-  //     `http://localhost:3000/api/syncWithSpotify?access_token=${accessToken}`
-  //   );
-  //   const data = await response.json();
-  //   console.log(data);
-  // };
+  }, [isAuthenticated]);
 
   return (
     <>

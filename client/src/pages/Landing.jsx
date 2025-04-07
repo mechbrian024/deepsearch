@@ -1,12 +1,15 @@
 // import NavigationBar from "../components/NavigationBar";
 import Logo from "../assets/Logo.png";
+import { useSpotifyAuth } from "../context/SpotifyAuthContext";
+import { Navigate } from "react-router-dom";
 
 const Landing = () => {
-  const handleLogin = () => {
-    console.log("Logging in...");
-    // Redirect to the Spotify authorization URL
-    window.location.href = "http://localhost:3000/auth";
-  };
+  const { login, isAuthenticated } = useSpotifyAuth();
+  console.log("isAuthenticated", isAuthenticated);
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   return (
     <>
@@ -21,7 +24,7 @@ const Landing = () => {
             Community
           </a>
           <button
-            onClick={handleLogin}
+            onClick={login}
             className="text-xl font-bold hover:text-teal-300"
           >
             Login
@@ -45,7 +48,7 @@ const Landing = () => {
           </ul>
           <p className="mt-6">Get started by logging in with Spotify!</p>
           <button
-            onClick={handleLogin}
+            onClick={login}
             className="mt-4 bg-gray-700 text-teal-300 px-4 py-2 rounded-full text-sm font-semibold hover:bg-gray-600 inline-block"
           >
             Login with Spotify

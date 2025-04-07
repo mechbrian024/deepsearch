@@ -13,20 +13,73 @@ import Searches from "./pages/Searches";
 import Account from "./pages/Account";
 import Dashboard from "./pages/Dashboard";
 import "./App.css";
+import { SpotifyAuthProvider } from "./context/SpotifyAuthContext";
+import PrivateRoute from "./components/PrivateRoute";
 
 function AppDS() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/create-search" element={<NewSearch />} />
-        <Route path="/playlists" element={<Playlists />} />
-        <Route path="/community" element={<Community />} />
-        <Route path="/searches" element={<Searches />} />
-        <Route path="/account" element={<Account />} />
-      </Routes>
+      <SpotifyAuthProvider>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          {/* Protected routes */}
+          {/* <Route path="/login" element={<Login />} /> */}
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+          <Route
+            path="/create-search"
+            element={
+              <PrivateRoute>
+                <NewSearch />
+              </PrivateRoute>
+            }
+          />
+          {/* <Route path="/create-search" element={<NewSearch />} /> */}
+          <Route
+            path="/playlists"
+            element={
+              <PrivateRoute>
+                <Playlists />
+              </PrivateRoute>
+            }
+          />
+          {/* <Route path="/playlists" element={<Playlists />} /> */}
+          <Route
+            path="/community"
+            element={
+              <PrivateRoute>
+                <Community />
+              </PrivateRoute>
+            }
+          />
+          {/* <Route path="/community" element={<Community />} /> */}
+          <Route
+            path="/searches"
+            element={
+              <PrivateRoute>
+                <Searches />
+              </PrivateRoute>
+            }
+          />
+          {/* <Route path="/searches" element={<Searches />} /> */}
+          <Route
+            path="/account"
+            element={
+              <PrivateRoute>
+                <Account />
+              </PrivateRoute>
+            }
+          />
+          {/* <Route path="/account" element={<Account />} /> */}
+        </Routes>
+      </SpotifyAuthProvider>
     </Router>
   );
 }

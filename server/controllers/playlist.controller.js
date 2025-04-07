@@ -4,72 +4,6 @@ import errorHandler from "./error.controller.js";
 import extend from "lodash/extend.js";
 import { spotifyApi } from "../../server.js";
 
-// const createPlaylist = async (req, res) => {
-//   const playlist = new Playlist(req.body);
-//   try {
-//     await playlist.save();
-//     return res.status(200).json({
-//       message: "Successfully created playlist!",
-//     });
-//   } catch (err) {
-//     return res.status(400).json({
-//       error: errorHandler.getErrorMessage(err),
-//     });
-//   }
-// };
-
-// const getPlaylists = async (req, res) => {
-//   try {
-//     console.log("request received");
-//     const accessToken = req.query.access_token;
-//     console.log("Access token:", accessToken);
-//     spotifyApi.setAccessToken(accessToken); // Set the access token dynamically
-//     const playlists = await spotifyApi.getUserPlaylists();
-//     res.json(playlists.body);
-//     // console.log(res.json(playlists.body));
-//   } catch (err) {
-//     console.error("Error fetching playlists:", err);
-//     res.status(500).send("Failed to fetch playlists.");
-//   }
-// };
-
-// const getPlaylistTracks = async (req, res) => {
-//   const { access_token, playlist_id } = req.query;
-
-//   try {
-//     spotifyApi.setAccessToken(access_token);
-//     const data = await spotifyApi.getPlaylistTracks(playlist_id);
-//     res.json(data.body);
-//   } catch (err) {
-//     console.error("Error fetching playlist tracks:", err);
-//     res.status(500).send("Failed to fetch playlist tracks.");
-//   }
-// };
-
-// const getSongInfo = async (req, res) => {
-//   const { access_token, song_id } = req.query;
-//   try {
-//     spotifyApi.setAccessToken(access_token);
-//     const data = await spotifyApi.getTrack(song_id);
-//     res.json(data.body);
-//   } catch (err) {
-//     console.error("Error fetching song info:", err);
-//     res.status(500).send("Failed to fetch song info.");
-//   }
-// };
-
-// const getLikedSongs = async (req, res) => {
-//   const accessToken = req.query.access_token;
-//   try {
-//     spotifyApi.setAccessToken(accessToken);
-//     const data = await spotifyApi.getMySavedTracks();
-//     res.json(data.body);
-//   } catch (err) {
-//     console.error("Error fetching liked songs:", err);
-//     res.status(500).send("Failed to fetch liked songs.");
-//   }
-// };
-
 const createPlaylist = async (req, res) => {
   const accessToken = req.query.access_token;
   const { topTracks } = req.body;
@@ -354,101 +288,7 @@ const getSongById = async (req, res) => {
   }
 };
 
-// const getPlayListById = async (req, res) => {
-//   try {
-//     const playlistid = req.body.playlistId;
-//     const accessToken = req.query.access_token;
-//     spotifyApi.setAccessToken(accessToken);
-//     const playlist = await spotifyApi.getPlaylist(playlistid);
-//     res.send(200).json(playlist.body);
-//   } catch (err) {
-//     console.error("Error fetching playlist:", err);
-//     res.status(500).send("Failed to fetch playlist.");
-//   }
-// };
-
-// const createPlaylist = async (req, res) => {
-//   const accessToken = req.query.access_token;
-//   const { topTracks } = req.body;
-//   try {
-//     spotifyApi.setAccessToken(accessToken);
-//     const playlistResponse = await spotifyApi.createPlaylist(
-//       "Top 10 Liked Songs",
-//       {
-//         description: "A playlist of your top 10 liked songs",
-//         public: false,
-//       }
-//     );
-//     const playlistId = playlistResponse.body.id;
-//     await spotifyApi.addTracksToPlaylist(
-//       playlistId,
-//       topTracks.map((track) => track.uri)
-//     );
-
-//     res.json({ message: "Playlist created successfully!", playlistId });
-//   } catch (err) {
-//     console.error("Error creating playlist:", err);
-//     if (err.response) {
-//       console.error("Spotify API Error Response:", err.response.body);
-//     }
-
-//     res.status(500).send("Failed to create playlist.");
-//   }
-// };
-
-// const playlistByID = async (req, res, next, id) => {
-//   try {
-//     let playlist = await Playlist.findById(id);
-//     if (!playlist)
-//       return res.status("400").json({
-//         error: "Playlist not found",
-//       });
-//     req.playlist = playlist;
-//     next();
-//   } catch (err) {
-//     return res.status("400").json({
-//       error: "Could not retrieve playlist",
-//     });
-//   }
-// };
-
-// const read = (req, res) => {
-//   return res.json(req.playlist);
-// };
-
-// const update = async (req, res) => {
-//   try {
-//     let playlist = req.playlist;
-//     playlist = extend(playlist, req.body);
-//     playlist.updated = Date.now();
-//     await playlist.save();
-//     res.json(playlist);
-//   } catch (err) {
-//     return res.status(400).json({
-//       error: errorHandler.getErrorMessage(err),
-//     });
-//   }
-// };
-
-// const remove = async (req, res) => {
-//   try {
-//     let playlist = req.playlist;
-//     let deletedPlaylist = await playlist.remove();
-//     res.json(deletedPlaylist);
-//   } catch (err) {
-//     return res.status(400).json({
-//       error: errorHandler.getErrorMessage(err),
-//     });
-//   }
-// };
-
 export default {
-  // createPlaylist,
-  // syncPlaylistsWithSpotify,
-  // getPlaylists,
-  // getPlaylistTracks,
-  // getSongInfo,
-  // getLikedSongs,
   createPlaylist,
   deletePlaylist,
   syncPlaylistsWithSpotify,
@@ -456,8 +296,4 @@ export default {
   getPlaylistById,
   getSongById,
   createSpotifyPlaylist,
-  // getPlayListById,
-  // read,
-  // update,
-  // remove,
 };
