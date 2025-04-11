@@ -20,7 +20,9 @@ const userSlice = createSlice({
     builder
       .addCase(fetchUserThunk.fulfilled, (state, action) => {
         state.loading = false;
+        console.log(state.user);
         state.user = action.payload;
+        console.log(state.user);
       })
       .addCase(fetchUserThunk.rejected, (state, action) => {
         state.loading = false;

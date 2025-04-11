@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSpotifyAuth } from "../context/SpotifyAuthContext";
 
 const NavigationBar = () => {
   const navigate = useNavigate();
   const location = useLocation(); // Get the current path
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); //
+  //
+  //State to toggle dropdown
+  const { logout } = useSpotifyAuth(); // Access the logout function from context
 
   const navStyle = {
     position: "fixed",
@@ -56,8 +60,8 @@ const NavigationBar = () => {
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", // Subtle shadow for depth
     overflow: "hidden",
     zIndex: 1001, // Ensure it appears above other elements
-    // opacity: isDropdownOpen ? 1 : 0, // Fade-in effect
-    // transform: isDropdownOpen ? "translateY(0)" : "translateY(-10px)", // Slide-down effect
+    opacity: isDropdownOpen ? 1 : 0, // Fade-in effect
+    transform: isDropdownOpen ? "translateY(0)" : "translateY(-10px)", // Slide-down effect
     transition: "opacity 0.3s ease, transform 0.3s ease", // Smooth animation
   };
 
@@ -108,12 +112,49 @@ const NavigationBar = () => {
         >
           Community
         </span>
-        <span
-          onClick={() => navigate("/account")}
-          style={navLinkStyle("/account")}
+
+        {/* Account Dropdown */}
+        <div
+          style={{ position: "relative" }}
+          onMouseEnter={() => setIsDropdownOpen(true)}
+          onMouseLeave={() => setIsDropdownOpen(false)}
         >
-          Account
-        </span>
+          <span
+            style={navLinkStyle("/account")}
+            aria-expanded={isDropdownOpen}
+            aria-label="Account menu"
+          >
+            Account
+          </span>
+          <div style={dropdownStyle}>
+            <div
+              style={dropdownItemStyle}
+              onMouseEnter={(e) =>
+                (e.target.style.backgroundColor =
+                  dropdownItemHoverStyle.backgroundColor)
+              }
+              onMouseLeave={(e) =>
+                (e.target.style.backgroundColor = "transparent")
+              }
+              onClick={() => navigate("/profile")}
+            >
+              Profile
+            </div>
+            <div
+              style={dropdownItemStyle}
+              onMouseEnter={(e) =>
+                (e.target.style.backgroundColor =
+                  dropdownItemHoverStyle.backgroundColor)
+              }
+              onMouseLeave={(e) =>
+                (e.target.style.backgroundColor = "transparent")
+              }
+              onClick={logout}
+            >
+              Logout
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -70,14 +70,14 @@ function AppDS() {
             }
           />
           {/* <Route path="/searches" element={<Searches />} /> */}
-          <Route
+          {/* <Route
             path="/account"
             element={
               <PrivateRoute>
                 <Account />
               </PrivateRoute>
             }
-          />
+          /> */}
           {/* <Route path="/account" element={<Account />} /> */}
           <Route
             path="/profile"
