@@ -45,3 +45,21 @@ export const fetchSongs = async (songIds) => {
     console.error("Error fetching songs:", error);
   }
 };
+
+export const fetchUser = async (accessToken) => {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/api/user?access_token=${accessToken}`
+    );
+
+    if (response.ok) {
+      const data = response.json();
+      console.log("user data: ", data);
+      return data;
+    } else {
+      throw new Error("unable to retrieve user data");
+    }
+  } catch (error) {
+    return error.msg;
+  }
+};

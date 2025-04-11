@@ -1,3 +1,4 @@
+import { set } from "lodash";
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -9,7 +10,7 @@ export const SpotifyAuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("spotifyauthcontextuseEffect called");
+    console.log("spotifyauthcontext useEffect called");
     // console.log("i see this loading when app loads");
     // Check for access token in URL params (after Spotify redirect)
     const params = new URLSearchParams(window.location.search);
@@ -45,18 +46,38 @@ export const SpotifyAuthProvider = ({ children }) => {
     window.location.href = "http://localhost:3000/auth";
   };
 
-  // const logout = () => {
-  //   setAccessToken(null);
-  //   localStorage.removeItem("spotify_access_token");
-  //   navigate("/");
-  // };
+  const logout = async () => {
+    if (!accessToken) {
+      console.error("No access token to revoke");
+      return;
+    }
+
+    const response = await fetch("/api/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ accessToken }), // Send the access token to the backend
+    });
+
+    if (response.ok) {
+      // Handle successful logout
+      setAccessToken(null);
+      localStorage.removeItem("spotify_access_token");
+      navigate("/");
+
+      console.log("Logged out successfully");
+    } else {
+      console.error("Logout failed");
+    }
+  };
 
   const value = {
     accessToken,
     loading,
     isAuthenticated: !!accessToken,
     login,
-    // logout,
+    logout,
   };
 
   return (

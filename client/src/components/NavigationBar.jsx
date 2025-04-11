@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useSpotifyAuth } from "../context/SpotifyAuthContext";
 
 const NavigationBar = () => {
   const navigate = useNavigate();
   const location = useLocation(); // Get the current path
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); //
+  //
+  //State to toggle dropdown
+  const { logout } = useSpotifyAuth(); // Access the logout function from context
 
   const navStyle = {
     position: "fixed",
@@ -31,6 +36,7 @@ const NavigationBar = () => {
   const rightContainerStyle = {
     display: "flex",
     gap: "30px",
+    position: "relative", // For dropdown positioning
   };
 
   const navLinkStyle = (path) => ({
@@ -44,6 +50,31 @@ const NavigationBar = () => {
         : "none",
     transform: location.pathname === path ? "scale(1.05)" : "none", // Slightly enlarge the active link
   });
+
+  const dropdownStyle = {
+    position: "absolute",
+    top: "100%", // Position below the Account button
+    right: "-13px",
+    backgroundColor: "#2a2a2a", // Match the application's dark theme
+    borderRadius: "8px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", // Subtle shadow for depth
+    overflow: "hidden",
+    zIndex: 1001, // Ensure it appears above other elements
+    opacity: isDropdownOpen ? 1 : 0, // Fade-in effect
+    transform: isDropdownOpen ? "translateY(0)" : "translateY(-10px)", // Slide-down effect
+    transition: "opacity 0.3s ease, transform 0.3s ease", // Smooth animation
+  };
+
+  const dropdownItemStyle = {
+    padding: "10px 20px",
+    color: "#a8f0e8", // Teal text color
+    cursor: "pointer",
+    transition: "background-color 0.3s ease",
+  };
+
+  const dropdownItemHoverStyle = {
+    backgroundColor: "#3a3a3a", // Slightly lighter background on hover
+  };
 
   return (
     <div style={navStyle}>
@@ -78,12 +109,49 @@ const NavigationBar = () => {
         >
           Community
         </span>
-        <span
-          onClick={() => navigate("/account")}
-          style={navLinkStyle("/account")}
+
+        {/* Account Dropdown */}
+        <div
+          style={{ position: "relative" }}
+          onMouseEnter={() => setIsDropdownOpen(true)}
+          onMouseLeave={() => setIsDropdownOpen(false)}
         >
-          Account
-        </span>
+          <span
+            style={navLinkStyle("/account")}
+            aria-expanded={isDropdownOpen}
+            aria-label="Account menu"
+          >
+            Account
+          </span>
+          <div style={dropdownStyle}>
+            <div
+              style={dropdownItemStyle}
+              onMouseEnter={(e) =>
+                (e.target.style.backgroundColor =
+                  dropdownItemHoverStyle.backgroundColor)
+              }
+              onMouseLeave={(e) =>
+                (e.target.style.backgroundColor = "transparent")
+              }
+              onClick={() => navigate("/profile")}
+            >
+              Profile
+            </div>
+            <div
+              style={dropdownItemStyle}
+              onMouseEnter={(e) =>
+                (e.target.style.backgroundColor =
+                  dropdownItemHoverStyle.backgroundColor)
+              }
+              onMouseLeave={(e) =>
+                (e.target.style.backgroundColor = "transparent")
+              }
+              onClick={logout}
+            >
+              Logout
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
