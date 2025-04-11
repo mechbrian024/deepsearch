@@ -29,6 +29,11 @@ export const fetchSongsThunk = createAsyncThunk(
   }
 );
 
+export const fetchUserThunk = createAsyncThunk("user", async (accessToken) => {
+  const userDetails = await fetchUserThunk(accessToken);
+  return userDetails;
+});
+
 const playlistSlice = createSlice({
   name: "playlists",
   initialState: {

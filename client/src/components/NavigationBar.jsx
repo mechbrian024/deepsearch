@@ -1,23 +1,10 @@
-import { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useSpotifyAuth } from "../context/SpotifyAuthContext";
 
 const NavigationBar = () => {
   const navigate = useNavigate();
   const location = useLocation(); // Get the current path
-
-  // State to check if the user is logged in
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  useEffect(() => {
-    const storedToken = localStorage.getItem("spotify_access_token");
-    setIsLoggedIn(!!storedToken); // true or false
-  }, []);
-
-  // This function will redirect the user to the Spotify authorization URL
-  const handleLogin = () => {
-    console.log("Logging in...");
-    // Redirect to the Spotify authorization URL
-    window.location.href = "http://localhost:3000/auth";
-  };
 
   const navStyle = {
     position: "fixed",
@@ -45,6 +32,7 @@ const NavigationBar = () => {
   const rightContainerStyle = {
     display: "flex",
     gap: "30px",
+    position: "relative", // For dropdown positioning
   };
 
   const navLinkStyle = (path) => ({
@@ -59,6 +47,31 @@ const NavigationBar = () => {
     transform: location.pathname === path ? "scale(1.05)" : "none", // Slightly enlarge the active link
   });
 
+  const dropdownStyle = {
+    position: "absolute",
+    top: "100%", // Position below the Account button
+    right: "-13px",
+    backgroundColor: "#2a2a2a", // Match the application's dark theme
+    borderRadius: "8px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", // Subtle shadow for depth
+    overflow: "hidden",
+    zIndex: 1001, // Ensure it appears above other elements
+    // opacity: isDropdownOpen ? 1 : 0, // Fade-in effect
+    // transform: isDropdownOpen ? "translateY(0)" : "translateY(-10px)", // Slide-down effect
+    transition: "opacity 0.3s ease, transform 0.3s ease", // Smooth animation
+  };
+
+  const dropdownItemStyle = {
+    padding: "10px 20px",
+    color: "#a8f0e8", // Teal text color
+    cursor: "pointer",
+    transition: "background-color 0.3s ease",
+  };
+
+  const dropdownItemHoverStyle = {
+    backgroundColor: "#3a3a3a", // Slightly lighter background on hover
+  };
+
   return (
     <div style={navStyle}>
       {/* Logo */}
@@ -70,52 +83,38 @@ const NavigationBar = () => {
       </div>
 
       {/* Navigation Links */}
-      {isLoggedIn ? (
-        <div style={rightContainerStyle}>
-          <span
-            onClick={() => navigate("/dashboard")}
-            style={navLinkStyle("/dashboard")}
-          >
-            Dashboard
-          </span>
-          <span
-            onClick={() => navigate("/searches")}
-            style={navLinkStyle("/searches")}
-          >
-            Your Searches
-          </span>
-          <span
-            onClick={() => navigate("/playlists")}
-            style={navLinkStyle("/playlists")}
-          >
-            Your Playlists
-          </span>
-          <span
-            onClick={() => navigate("/community")}
-            style={navLinkStyle("/community")}
-          >
-            Community
-          </span>
-          <span
-            onClick={() => navigate("/account")}
-            style={navLinkStyle("/account")}
-          >
-            Account
-          </span>
-        </div>
-      ) : (
-        <div style={rightContainerStyle}>
-          <span
-            onClick={() => navigate("/community")}
-            style={navLinkStyle("/community")}
-          >
-            Community
-          </span>
-          <span onClick={handleLogin} style={navLinkStyle("/account")}>
-            Login
-          </span>
-        </div>
-      )}
+      <div style={rightContainerStyle}>
+        <span
+          onClick={() => navigate("/dashboard")}
+          style={navLinkStyle("/dashboard")}
+        >
+          Dashboard
+        </span>
+        <span
+          onClick={() => navigate("/searches")}
+          style={navLinkStyle("/searches")}
+        >
+          Your Searches
+        </span>
+        <span
+          onClick={() => navigate("/playlists")}
+          style={navLinkStyle("/playlists")}
+        >
+          Your Playlists
+        </span>
+        <span
+          onClick={() => navigate("/community")}
+          style={navLinkStyle("/community")}
+        >
+          Community
+        </span>
+        <span
+          onClick={() => navigate("/account")}
+          style={navLinkStyle("/account")}
+        >
+          Account
+        </span>
+      </div>
     </div>
   );
 };

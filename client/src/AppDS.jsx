@@ -12,6 +12,7 @@ import Community from "./pages/Community";
 import Searches from "./pages/Searches";
 import Account from "./pages/Account";
 import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
 import "./App.css";
 import { SpotifyAuthProvider } from "./context/SpotifyAuthContext";
 import PrivateRoute from "./components/PrivateRoute";
@@ -78,6 +79,14 @@ function AppDS() {
             }
           />
           {/* <Route path="/account" element={<Account />} /> */}
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </SpotifyAuthProvider>
     </Router>

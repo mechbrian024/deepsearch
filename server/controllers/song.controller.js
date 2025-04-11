@@ -1,6 +1,7 @@
 import Song from "../models/song.model.js";
 import errorHandler from "./error.controller.js";
 import extend from "lodash/extend.js";
+import axios from "axios";
 
 const create = async (req, res) => {
   const song = new Song(req.body);
@@ -14,18 +15,20 @@ const create = async (req, res) => {
       error: errorHandler.getErrorMessage(err),
     });
   }
-}
+};
 
 const list = async (req, res) => {
   try {
-    let songs = await Song.find().select("name artists album duration addedBy addedOn");
+    let songs = await Song.find().select(
+      "name artists album duration addedBy addedOn"
+    );
     res.json(songs);
   } catch (err) {
     return res.status(400).json({
       error: errorHandler.getErrorMessage(err),
     });
   }
-}
+};
 
 const songByID = async (req, res, next, id) => {
   try {
@@ -41,11 +44,11 @@ const songByID = async (req, res, next, id) => {
       error: "Could not retrieve song",
     });
   }
-}
+};
 
 const read = (req, res) => {
   return res.json(req.song);
-}
+};
 
 const update = async (req, res) => {
   try {
@@ -59,7 +62,7 @@ const update = async (req, res) => {
       error: errorHandler.getErrorMessage(err),
     });
   }
-}
+};
 
 const remove = async (req, res) => {
   try {
@@ -71,6 +74,6 @@ const remove = async (req, res) => {
       error: errorHandler.getErrorMessage(err),
     });
   }
-}
+};
 
 export default { create, list, songByID, read, update, remove };

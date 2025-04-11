@@ -9,7 +9,7 @@ const createPlaylist = async (req, res) => {
   const { topTracks } = req.body;
 
   try {
-    console.log("Received Top Tracks:", topTracks); // Debugging: Log received data
+    ////console.log("Received Top Tracks:", topTracks); // Debugging: Log received data
 
     // Validate topTracks
     if (!Array.isArray(topTracks) || topTracks.length === 0) {
@@ -36,7 +36,7 @@ const createPlaylist = async (req, res) => {
         public: false,
       }
     );
-    console.log("Playlist Response:", playlistResponse);
+    //console.log("Playlist Response:", playlistResponse);
 
     const playlistId = playlistResponse.body.id;
 
@@ -45,9 +45,9 @@ const createPlaylist = async (req, res) => {
 
     res.json({ message: "Playlist created successfully!", playlistId });
   } catch (err) {
-    console.error("Error creating playlist:", err);
+    //console.error("Error creating playlist:", err);
     if (err.response) {
-      console.error("Spotify API Error Response:", err.response.body);
+      //console.error("Spotify API Error Response:", err.response.body);
     }
 
     res.status(500).send("Failed to create playlist.");
@@ -55,8 +55,8 @@ const createPlaylist = async (req, res) => {
 };
 
 const createSpotifyPlaylist = async (req, res) => {
-  console.log("Create Spotify Playlist Request Received");
-  console.log("Request Body:", req.body);
+  //console.log("Create Spotify Playlist Request Received");
+  //console.log("Request Body:", req.body);
 
   const accessToken = req.query.access_token;
   const { name, songIds } = req.body;
@@ -90,11 +90,11 @@ const createSpotifyPlaylist = async (req, res) => {
 
     res.json({ message: "Playlist created successfully!", playlistId });
   } catch (err) {
-    console.error("Error creating playlist:", err);
+    //console.error("Error creating playlist:", err);
 
     // Log Spotify API error details if available
     if (err.body && err.body.error) {
-      console.error("Spotify API Error:", err.body.error);
+      //console.error("Spotify API Error:", err.body.error);
     }
 
     res.status(500).send("Failed to create playlist.");
@@ -109,7 +109,7 @@ const deletePlaylist = async (req, res) => {
     await spotifyApi.unfollowPlaylist(playlistId);
     res.json({ message: "Playlist deleted successfully!" });
   } catch (err) {
-    console.error("Error deleting playlist:", err);
+    //console.error("Error deleting playlist:", err);
     res.status(500).send("Failed to delete playlist.");
   }
 };
@@ -123,7 +123,7 @@ const syncPlaylistsWithSpotify = async (req, res) => {
     const spotifyPlaylistsResponse = await spotifyApi.getUserPlaylists();
     const spotifyPlaylists = spotifyPlaylistsResponse.body.items;
 
-    console.log("Fetched Spotify Playlists:", spotifyPlaylists);
+    //console.log("Fetched Spotify Playlists:", spotifyPlaylists);
 
     // Step 2: Fetch all playlists from MongoDB
     const dbPlaylists = await Playlist.find({});
@@ -135,14 +135,14 @@ const syncPlaylistsWithSpotify = async (req, res) => {
     // Create or update playlists in MongoDB
     for (const spotifyPlaylist of spotifyPlaylists) {
       const { id: playlistId, name } = spotifyPlaylist;
-      console.log("Playlist name", name);
+      //console.log("Playlist name", name);
 
       if (dbPlaylistsMap.has(playlistId)) {
         // Update existing playlist in MongoDB
         const dbPlaylist = dbPlaylistsMap.get(playlistId);
         dbPlaylist.name = name; // Update name if it has changed
         await dbPlaylist.save();
-        console.log(`Updated playlist: ${name}`);
+        //console.log(`Updated playlist: ${name}`);
       } else {
         // Create new playlist in MongoDB
         const newPlaylist = new Playlist({
@@ -151,7 +151,7 @@ const syncPlaylistsWithSpotify = async (req, res) => {
           songs: [], // Initialize with an empty songs array
         });
         await newPlaylist.save();
-        console.log(`Created new playlist: ${name}`);
+        //console.log(`Created new playlist: ${name}`);
       }
     }
 
@@ -159,7 +159,7 @@ const syncPlaylistsWithSpotify = async (req, res) => {
     for (const dbPlaylist of dbPlaylists) {
       if (!spotifyPlaylistIds.includes(dbPlaylist.playlistId)) {
         await Playlist.findByIdAndDelete(dbPlaylist._id); // Use findByIdAndDelete to remove the playlist
-        console.log(`Deleted playlist: ${dbPlaylist.name}`);
+        //console.log(`Deleted playlist: ${dbPlaylist.name}`);
       }
     }
 
@@ -188,7 +188,7 @@ const syncPlaylistsWithSpotify = async (req, res) => {
           existingSong.popularity = popularity || 0; // Default to 0 if popularity is undefined
           existingSong.duration = Math.round(duration_ms / 1000); // Convert milliseconds to seconds
           await existingSong.save();
-          console.log(`Updated song: ${existingSong.songName}`);
+          //console.log(`Updated song: ${existingSong.songName}`);
         } else {
           // Fetch song details from Spotify
           const songData = await spotifyApi.getTrack(trackId);
@@ -229,15 +229,15 @@ const syncPlaylistsWithSpotify = async (req, res) => {
             duration: Math.round(duration_ms / 1000), // Convert milliseconds to seconds
           });
           await newSong.save();
-          console.log(`Created new song: ${name}`);
+          //console.log(`Created new song: ${name}`);
         }
       }
-      console.log(`Updated songs for playlist: ${playlist.name}`);
+      //console.log(`Updated songs for playlist: ${playlist.name}`);
     }
 
     res.json({ message: "Playlists synced successfully!" });
   } catch (err) {
-    console.error("Error syncing playlists:", err);
+    //console.error("Error syncing playlists:", err);
     res.status(500).send("Failed to sync playlists.");
   }
 };
@@ -245,11 +245,11 @@ const syncPlaylistsWithSpotify = async (req, res) => {
 const getAllPlaylists = async (req, res) => {
   try {
     // Fetch all playlists from the database
-    console.log("Fetch all playlists from db request received");
+    //console.log("Fetch all playlists from db request received");
     const playlists = await Playlist.find({});
     res.json(playlists); // Return the playlists as a JSON response
   } catch (err) {
-    console.error("Error fetching playlists:", err);
+    //console.error("Error fetching playlists:", err);
     res.status(500).json({ error: "Failed to fetch playlists" });
   }
 };
@@ -266,7 +266,7 @@ const getPlaylistById = async (req, res) => {
 
     res.json(playlist); // Return the playlist document
   } catch (err) {
-    console.error("Error fetching playlist:", err);
+    //console.error("Error fetching playlist:", err);
     res.status(500).json({ error: "Failed to fetch playlist" });
   }
 };
@@ -283,7 +283,7 @@ const getSongById = async (req, res) => {
 
     res.json(song); // Return the song document
   } catch (err) {
-    console.error("Error fetching song:", err);
+    //console.error("Error fetching song:", err);
     res.status(500).json({ error: "Failed to fetch song" });
   }
 };

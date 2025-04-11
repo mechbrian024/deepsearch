@@ -33,6 +33,7 @@ app.use("/", authRoutes);
 app.use("/", playListRoutes);
 app.use("/", spotifyRoutes);
 app.use("/", filterRoutes);
+app.use("/", userRoutes);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
