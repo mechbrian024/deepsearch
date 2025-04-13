@@ -94,24 +94,24 @@ const NavigationBar = () => {
         >
           Dashboard
         </span>
-        <span
+        {/* <span
           onClick={() => navigate("/searches")}
           style={navLinkStyle("/searches")}
         >
           Your Searches
-        </span>
+        </span> */}
         <span
           onClick={() => navigate("/playlists")}
           style={navLinkStyle("/playlists")}
         >
           Your Playlists
         </span>
-        <span
+        {/* <span
           onClick={() => navigate("/community")}
           style={navLinkStyle("/community")}
         >
           Community
-        </span>
+        </span> */}
 
         {/* Account Dropdown */}
         <div
