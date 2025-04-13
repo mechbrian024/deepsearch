@@ -29,7 +29,8 @@ function AppDS() {
             path="/dashboard"
             element={
               <PrivateRoute>
-                <Dashboard />
+                {/* <Dashboard /> */}
+                <Navigate to="/create-search" replace />
               </PrivateRoute>
             }
           />
