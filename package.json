@@ -34,6 +34,7 @@
     "mongodb": "^6.13.0",
     "mongoose": "^8.10.0",
     "spotify-web-api-node": "^5.0.2",
+    "uuid": "^11.1.0",
     "vite": "^6.0.11"
   }
 }
