@@ -5,7 +5,21 @@ import Song from "../models/song.model.js";
 import { filterSongsByFilterObject } from "../utils/filterEngine.js";
 
 const create = async (req, res) => {
-  const filter = new Filter(req.body);
+  const transformedFilter = {
+    name: req.body.name,    
+    filterBlocks: req.body.filters.map(block => ({      
+      filterLines: block.map(line => ({
+        field: line.field,
+        condition: line.condition,
+        value: line.value,
+        connector: line.connector
+      }))
+    }))
+  };
+
+  const filter = new Filter(transformedFilter);
+  console.log("$$$$ filter object:", JSON.stringify(filter, null, 2));
+  
   try {
     await filter.save();
     return res.status(200).json({
@@ -19,7 +33,7 @@ const create = async (req, res) => {
 };
 
 const filterByName = async (req, res) => {
-  try {    
+  try {
     const filter = await Filter.findOne({ name: req.params.name });
     return res.status(200).json(filter);
   } catch (err) {
@@ -29,7 +43,7 @@ const filterByName = async (req, res) => {
 
 const search = async (req, res) => {
   try {
-    // Get playlistId from the request    
+    // Get playlistId from the request
     const listId = req.body.playlistId;
 
     // Retrieve songs from the playlist using playlistId
@@ -42,10 +56,10 @@ const search = async (req, res) => {
         return await Song.findOne({ songId: id });
       })
     );
-    
+
     // Filter Object
     const filter = new Filter(req.body.filter);
-    
+
     // Use FilterModel to filter songs
     const filteredSongs = filterSongsByFilterObject(songs, filter);
 
@@ -57,7 +71,5 @@ const search = async (req, res) => {
     });
   }
 };
-
-
 
 export default { create, filterByName, search };

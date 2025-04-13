@@ -1,33 +1,29 @@
-import mongoose from "mongoose";
+import mongoose, { connect } from "mongoose";
 
-const FilterLineSchema = new mongoose.Schema({
-  filterName: {
+const FilterLineSchema = new mongoose.Schema({ 
+  field:{
     type: String,
     required: true,
-  }, // e.g., "name", "popularity"
+  },
+  value:{
+    type: String,
+    required: true,
+  },
+  connector:{
+    type: String,
+    required: false,
+  },
   condition: {
     type: String,
-    required: true,
-  }, // e.g., "contains", "greater than"
-  criteria: {
-    type: String,
-    required: true,
-  }, // User input
-  logicalOperator: {
-    type: String,
-    required: true,
-  }, // e.g., "AND", "OR"
+    required: false,
+  }
 });
 
 const FilterBlockSchema = new mongoose.Schema({
   filterLines: {
     type: [FilterLineSchema],
     required: true,
-  },
-  blockLogicalOperator: {
-    type: String,
-    required: true,
-  }, // e.g., "AND", "OR"
+  }
 });
 
 const FilterSchema = new mongoose.Schema({

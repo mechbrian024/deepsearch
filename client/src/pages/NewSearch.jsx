@@ -103,6 +103,36 @@ const NewSearch = () => {
         ...new Set(songMetadata.map((song) => song.popularity)),
       ]);
       setDurations([...new Set(songMetadata.map((song) => song.duration))]);
+
+      // get name of the playlist
+      // get filters by name of the playlist
+      const playlistName = data.name;
+      const filterResponse = await fetch(
+        `http://localhost:3000/api/filter/filterByName/${playlistName}`
+      );
+
+      // get filter object
+      const filterObject = await filterResponse.json();
+      console.log("$$$$$ filter response: ", filterObject);
+
+      //update filters
+      if (filterObject == null || filterObject.filterBlocks.length == 0) {
+        setFilters([
+          [{ field: "Genre", condition: "", value: "", connector: "" }],
+        ]); // Reset to default filter if no filters found
+      } else {
+        setFilters(
+          filterObject.filterBlocks.map((block) =>
+            block.filterLines.map((line) => ({
+              field: line.field,
+              condition: line.condition,
+              value: line.value,
+              connector: line.connector,
+            }))
+          )
+        );
+      }
+      
     } catch (error) {
       console.error("Error fetching playlist details:", error);
     }
@@ -276,6 +306,28 @@ const NewSearch = () => {
       setBannerMessage(
         "No songs to add to the playlist. Please apply filters first."
       );
+      setBannerType("error");
+      return;
+    }
+
+    console.log("Creating Spotify playlist with songs:", filteredSongs);
+    console.log("Filter:", filters);
+
+    // Create filter object in the database
+    try {
+      const response = await fetch("http://localhost:3000/api/filter/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: playlistName, filters: filters }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to create filter object");
+      }
+    } catch (error) {
+      console.error("Error creating filter object:", error);
+      setBannerMessage("Failed to create filter object. Please try again.");
       setBannerType("error");
       return;
     }
