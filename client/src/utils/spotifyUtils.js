@@ -6,7 +6,7 @@ export const syncData = async (accessToken) => {
 
   try {
     const response = await fetch(
-      `http://localhost:3000/api/syncWithSpotify?access_token=${accessToken}`
+      `${import.meta.env.VITE_API_URL}/api/syncWithSpotify?access_token=${accessToken}`
     );
     const data = await response.json();
     console.log(data);
@@ -19,7 +19,7 @@ export const syncData = async (accessToken) => {
 
 export const fetchPlaylists = async () => {
   try {
-    const response = await fetch("http://localhost:3000/api/playlists");
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/playlists`);
     const data = await response.json();
     // setPlaylists(data); // Update the playlists state
     return data; // Return the data for further use
@@ -33,7 +33,7 @@ export const fetchSongs = async (songIds) => {
     const songDetails = await Promise.all(
       songIds.map(async (songId) => {
         const response = await fetch(
-          `http://localhost:3000/api/songs/${songId}`
+          `${import.meta.env.VITE_API_URL}/api/songs/${songId}`
         ); // Replace with your backend API endpoint
         const data = await response.json();
         return { id: songId, ...data };
@@ -49,7 +49,7 @@ export const fetchSongs = async (songIds) => {
 export const fetchUser = async (accessToken) => {
   try {
     const response = await fetch(
-      `http://localhost:3000/api/user?access_token=${accessToken}`
+      `${import.meta.env.VITE_API_URL}/api/user?access_token=${accessToken}`
     );
 
     if (response.ok) {

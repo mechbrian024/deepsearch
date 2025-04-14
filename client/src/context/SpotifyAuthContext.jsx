@@ -43,7 +43,7 @@ export const SpotifyAuthProvider = ({ children }) => {
 
   const login = () => {
     // Redirect to your backend auth endpoint
-    window.location.href = "http://localhost:3000/auth";
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth`;
   };
 
   const logout = async () => {

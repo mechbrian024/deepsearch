@@ -68,7 +68,7 @@ const NewSearch = () => {
   const handlePlaylistSelect = async (playlistId) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/playlists/${playlistId}`
+        `${import.meta.env.VITE_API_URL}/api/playlists/${playlistId}`
       );
       const data = await response.json();
       dispatch(setSelectedPlaylist(data));
@@ -77,7 +77,7 @@ const NewSearch = () => {
       const songMetadata = await Promise.all(
         data.songs.map(async (songId) => {
           const songResponse = await fetch(
-            `http://localhost:3000/api/songs/${songId}`
+            `${import.meta.env.VITE_API_URL}/api/songs/${songId}`
           );
           const songData = await songResponse.json();
           return {
@@ -108,7 +108,7 @@ const NewSearch = () => {
       // get filters by name of the playlist
       const playlistName = data.name;
       const filterResponse = await fetch(
-        `http://localhost:3000/api/filter/filterByName/${playlistName}`
+        `${import.meta.env.VITE_API_URL}/api/filter/filterByName/${playlistName}`
       );
 
       // get filter object
@@ -315,7 +315,7 @@ const NewSearch = () => {
 
     // Create filter object in the database
     try {
-      const response = await fetch("http://localhost:3000/api/filter/create", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/filter/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -334,7 +334,7 @@ const NewSearch = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/createSpotifyPlaylist?access_token=${accessToken}`,
+        `${import.meta.env.VITE_API_URL}/api/createSpotifyPlaylist?access_token=${accessToken}`,
         {
           method: "POST",
           headers: {

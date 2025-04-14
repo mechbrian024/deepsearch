@@ -33,7 +33,7 @@ const Login = () => {
   const handleLogin = () => {
     console.log("Logging in...");
     // Redirect to the Spotify authorization URL
-    window.location.href = "http://localhost:3000/auth";
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth`;
   };
 
   return (
