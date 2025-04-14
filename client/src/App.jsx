@@ -37,14 +37,14 @@ function App() {
     }
 
     const response = await fetch(
-      `http://localhost:3000/api/syncWithSpotify?access_token=${accessToken}`
+      `${import.meta.env.VITE_API_URL}/api/syncWithSpotify?access_token=${accessToken}`
     );
     const data = await response.json();
     console.log(data);
   };
 
   const handleLogin = () => {
-    window.location.href = "http://localhost:3000/auth";
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth`;
   };
 
   const fetchLikedSongs = async () => {
@@ -56,7 +56,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/getLikedSongs?access_token=${accessToken}`
+        `${import.meta.env.VITE_API_URL}/api/getLikedSongs?access_token=${accessToken}`
       );
       const data = await response.json();
       console.log(data);
@@ -76,7 +76,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/getPlaylists?access_token=${accessToken}`
+        `${import.meta.env.VITE_API_URL}/api/getPlaylists?access_token=${accessToken}`
       );
       const data = await response.json();
       console.log(data);
@@ -95,7 +95,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/getPlaylistTracks?access_token=${accessToken}&playlist_id=${playlistId}`
+        `${import.meta.env.VITE_API_URL}/api/getPlaylistTracks?access_token=${accessToken}&playlist_id=${playlistId}`
       );
       const data = await response.json();
       console.log(data);
@@ -114,7 +114,7 @@ function App() {
     }
     try {
       const response = await fetch(
-        `http://localhost:3000/api/getSongInfo?access_token=${accessToken}&song_id=${songId}`
+        `${import.meta.env.VITE_API_URL}/api/getSongInfo?access_token=${accessToken}&song_id=${songId}`
       );
       const data = await response.json();
     } catch (err) {
@@ -144,7 +144,7 @@ function App() {
 
       // Send the valid tracks to the backend
       const response = await fetch(
-        `http://localhost:3000/api/createPlaylist?access_token=${access_token}`,
+        `${import.meta.env.VITE_API_URL}/api/createPlaylist?access_token=${access_token}`,
         {
           method: "POST",
           headers: {
@@ -177,7 +177,7 @@ function App() {
     }
     try {
       const response = await fetch(
-        `http://localhost:3000/api/deletePlaylist?access_token=${access_token}`,
+        `${import.meta.env.VITE_API_URL}/api/deletePlaylist?access_token=${access_token}`,
         {
           method: "DELETE",
           headers: {
