@@ -1,4 +1,4 @@
-import Playlist from "../models/playList.model.js";
+import Playlist from "../models/playlist.model.js";
 import Song from "../models/song.model.js";
 import errorHandler from "./error.controller.js";
 import extend from "lodash/extend.js";
