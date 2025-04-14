@@ -16,7 +16,7 @@ const app = express();
 // Enable CORS for all routes
 app.use(
   cors({
-    origin: "http://localhost:5173", // Allow only this origin
+    origin: "https://deepsearch-client.onrender.com", // Allow only this origin
     methods: ["GET", "POST", "PUT", "DELETE"], // Allow specific HTTP methods
     credentials: true, // Allow cookies if needed
   })
