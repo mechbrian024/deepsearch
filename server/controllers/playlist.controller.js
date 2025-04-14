@@ -238,7 +238,10 @@ const syncPlaylistsWithSpotify = async (req, res) => {
     res.json({ message: "Playlists synced successfully!" });
   } catch (err) {
     //console.error("Error syncing playlists:", err);
-    res.status(500).send("Failed to sync playlists.");
+    res.status(500).json({ 
+      error: "Failed to sync playlists.",
+      details: err.message 
+    });
   }
 };
 
