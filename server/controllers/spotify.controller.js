@@ -32,7 +32,7 @@ const handleSpotifyCallback = async (req, res) => {
     spotifyApi.setAccessToken(accessToken);
     spotifyApi.setRefreshToken(refreshToken);
 
-    res.redirect(`${process.env.FRONTEND_URL}/dashboard?access_token=${accessToken}`);
+    res.redirect(`https://deepsearch-client.onrender.com/dashboard?access_token=${accessToken}`);
   } catch (err) {
     console.error("Error during Spotify authorization:", err);
     res.status(500).send("Failed to authenticate with Spotify.");
