@@ -1,6 +1,6 @@
 import errorHandler from "./error.controller.js";
 import Filter from "../models/filter.model.js";
-import Playlist from "../models/playList.model.js";
+import Playlist from "../models/playlist.model.js";
 import Song from "../models/song.model.js";
 import { filterSongsByFilterObject } from "../utils/filterEngine.js";
 
